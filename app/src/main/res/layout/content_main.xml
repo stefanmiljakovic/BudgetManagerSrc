@@ -12,14 +12,14 @@
     tools:context="com.week1.practice1.budgetmanager.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
         android:layout_marginBottom="60dp"
-        android:layout_marginTop="10dp"
-        />
+        android:layout_marginTop="5dp"
+        android:id="@+id/rv">
+    </android.support.v7.widget.RecyclerView>
+
 </RelativeLayout>
