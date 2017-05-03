@@ -15,7 +15,6 @@ import com.week1.practice1.budgetmanager.data.dataContractDbHelper;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
     public SQLiteDatabase mDb;
 
     @Override
@@ -36,19 +35,10 @@ public class MainActivity extends AppCompatActivity {
                 goToAdd();
             }
         });
+        
 
-        //Recycler View
-        LinearLayoutManager ll = new LinearLayoutManager(this);
-        recyclerView = (RecyclerView)findViewById(R.id.rv);
-        recyclerView.setLayoutManager(ll);
-
-        dataContractDbHelper DBHelper = new dataContractDbHelper(this);
-        SQLiteDatabase mDb = DBHelper.getWritableDatabase();
     }
 
-    public final SQLiteDatabase getWritableDatabase() {
-        return mDb;
-    }
 
     private void goToAdd(){
         Intent add = new Intent(this, addToList.class);
