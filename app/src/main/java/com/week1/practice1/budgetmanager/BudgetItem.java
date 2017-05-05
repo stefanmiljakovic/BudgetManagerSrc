@@ -6,14 +6,14 @@ import java.util.Date;
  * Created by dev7 on 25.4.17..
  */
 public class BudgetItem{
-        int money;
+        int moneyNeed;
         String name;
         Date date = new Date();
         Date dateEnd;
         int moneyRaised;
 
         BudgetItem(int a, String b, Date c, int d){
-            money = a;
+            moneyNeed = a;
             name = b;
             dateEnd = c;
             moneyRaised = d;
@@ -24,13 +24,13 @@ public class BudgetItem{
         }
 
         public int moneyLeft(){
-            return money - moneyRaised;
+            return moneyNeed - moneyRaised;
         }
 
         public void AddMoney(int add){
             moneyRaised += add;
-            if (moneyRaised > money)
-                moneyRaised = money;
+            if (moneyRaised > moneyNeed)
+                moneyRaised = moneyNeed;
         }
 
         public String getName(){
@@ -38,9 +38,15 @@ public class BudgetItem{
         }
 
         public int getPct(){
-            double a = money;
+            double a = moneyNeed;
             double b = moneyRaised;
             Double c = Math.floor(b/a);
             return Integer.valueOf(c.intValue());
+        }
+        public String outOf(){
+            if(moneyRaised == moneyNeed)
+                return "Complete!";
+            else
+                return Integer.toString(moneyRaised) + "$ / " + Integer.toString(moneyNeed) + "$";
         }
 }
