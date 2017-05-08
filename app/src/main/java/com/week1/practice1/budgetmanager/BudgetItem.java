@@ -12,11 +12,11 @@ public class BudgetItem{
         Date dateEnd;
         int moneyRaised;
 
-        BudgetItem(int a, String b, Date c, int d){
-            moneyNeed = a;
-            name = b;
-            dateEnd = c;
-            moneyRaised = d;
+        BudgetItem(int MoneyNeed, String Name, Date DateEnd, int MoneyRaised){
+            moneyNeed = MoneyNeed;
+            name = Name;
+            dateEnd = DateEnd;
+            moneyRaised = MoneyRaised;
         }
 
         public long timeLeft(){
@@ -40,7 +40,7 @@ public class BudgetItem{
         public int getPct(){
             double a = moneyNeed;
             double b = moneyRaised;
-            Double c = Math.floor(b/a);
+            Double c = 100 * b/a;
             return Integer.valueOf(c.intValue());
         }
         public String outOf(){
