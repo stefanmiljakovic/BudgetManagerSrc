@@ -51,7 +51,7 @@ public class addToList extends AppCompatActivity {
                         //Prevent projected date being greater than current
                         if(picked.after(today))
                         {
-                           btn.setText(dayOfMonth + "/" + month + "/" + year);
+                           btn.setText(dayOfMonth + "/" + Integer.toString(month + 1) + "/" + year);
                         }
                         else{
                             Snackbar.make(v, "Error! Given date can'be be smaller than the current one.", Snackbar.LENGTH_LONG)
@@ -143,9 +143,9 @@ public class addToList extends AppCompatActivity {
 
         ContentValues cv = new ContentValues();
 
-        cv.put(dataContract.dataEntry.COLUMN_PROJECT_NAME, moneyGot);
+        cv.put(dataContract.dataEntry.COLUMN_PROJECT_NAME, name);
         cv.put(dataContract.dataEntry.COLUMN_DATE_END, date);
-        cv.put(dataContract.dataEntry.COLUMN_MONEY_GOT, name);
+        cv.put(dataContract.dataEntry.COLUMN_MONEY_GOT, moneyGot);
         cv.put(dataContract.dataEntry.COLUMN_MONEY_NEED, moneyNeed);
 
 
