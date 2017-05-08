@@ -10,10 +10,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -70,7 +73,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                operate("UPDATE", projectName);
             }
         });
 
@@ -109,9 +112,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDb.delete(dataContract.dataEntry.TABLE_NAME, dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
-                        Intent rel = new Intent("callReloadDB");
-                        rel.putExtra("message","RELOAD");
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
+                        ReloadDB();
                         dialog.dismiss();
                     }
                 });
@@ -125,11 +126,56 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 alert.show();
                 break;
             case "UPDATE":
+                final AlertDialog.Builder addMoney = new AlertDialog.Builder(context);
+                addMoney.setTitle("Add funds!");
+                final EditText editText = new EditText(context);
+                editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                editText.setHeight(100);
+                editText.setWidth(300);
+
+                addMoney.setView(editText);
+                addMoney.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ContentValues cv = new ContentValues();
+                        Cursor c = mDb.rawQuery("SELECT* " +
+                                " FROM " + dataContract.dataEntry.TABLE_NAME +
+                                " WHERE " + dataContract.dataEntry.COLUMN_PROJECT_NAME +
+                                "=" + "'" + prName + "'",null);
+                        c.moveToFirst();
+                        int a = c.getInt(c.getColumnIndex(dataContract.dataEntry.COLUMN_MONEY_GOT));
+
+                        Log.d("DB", " " + a);
+                        int x = Integer.parseInt(editText.getText().toString()) + a;
+                        Log.d("DB", " " + x);
+
+                        cv.put(dataContract.dataEntry.COLUMN_MONEY_GOT, x);
+                        mDb.update(dataContract.dataEntry.TABLE_NAME, cv,  dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
+
+                        ReloadDB();
+                        dialog.dismiss();
+                    }
+                });
+
+                addMoney.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                addMoney.show();
+
                 break;
             case "FOCUS":
                 break;
         }
 
+    }
+
+    private void ReloadDB(){
+        Intent rel = new Intent("callReloadDB");
+        rel.putExtra("message","RELOAD");
+        LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
     }
 
 

@@ -20,6 +20,9 @@ public class BudgetItem{
             name = Name;
             dateEnd = DateEnd;
             moneyRaised = MoneyRaised;
+            if (moneyRaised > moneyNeed){
+                moneyRaised = moneyNeed;
+            }
         }
 
         public long timeLeft(){
