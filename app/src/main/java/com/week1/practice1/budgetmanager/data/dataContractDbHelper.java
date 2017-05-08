@@ -19,8 +19,7 @@ public class dataContractDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase){
         final String SQL_CREATE_TABLE = "CREATE TABLE " + dataContract.dataEntry.TABLE_NAME + " (" +
-                dataContract.dataEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                dataContract.dataEntry.COLUMN_PROJECT_NAME + " TEXT NOT NULL, " +
+                dataContract.dataEntry.COLUMN_PROJECT_NAME + " TEXT PRIMARY KEY NOT NULL, " +
                 dataContract.dataEntry.COLUMN_MONEY_GOT + " INTEGER NOT NULL, " +
                 dataContract.dataEntry.COLUMN_MONEY_NEED + " INTEGER NOT NULL, " +
                 dataContract.dataEntry.COLUMN_DATE_END + " TEXT NOT NULL);";
