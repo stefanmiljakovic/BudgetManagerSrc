@@ -25,15 +25,18 @@
         android:layout_marginLeft="10dp" />
 
     <EditText
+        android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/editText"
-        android:minWidth="150dp"
-        android:layout_toRightOf="@+id/textView"
-        android:layout_toEndOf="@+id/textView"
         android:layout_marginLeft="35dp"
         android:layout_marginStart="35dp"
-        android:layout_marginTop="47dp" />
+        android:layout_marginTop="47dp"
+        android:layout_toEndOf="@+id/textView"
+        android:layout_toRightOf="@+id/textView"
+        android:imeOptions="actionDone"
+        android:minWidth="150dp"
+        android:maxLength="10"
+        android:singleLine="true"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -71,7 +74,8 @@
         android:layout_alignRight="@+id/textView2"
         android:layout_alignEnd="@+id/textView2"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="-10dp" />
+        android:layout_marginRight="-10dp"
+        android:maxLength="4"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -86,7 +90,8 @@
         android:layout_alignRight="@+id/textView3"
         android:layout_alignEnd="@+id/textView3"
         android:layout_marginRight="-10dp"
-        android:layout_marginLeft="-10dp" />
+        android:layout_marginLeft="-10dp"
+        android:maxLength="4"/>
 
     <Button
         android:layout_width="wrap_content"

@@ -1,5 +1,8 @@
 package com.week1.practice1.budgetmanager;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.util.Date;
 
 /**
@@ -27,7 +30,7 @@ public class BudgetItem{
             return moneyNeed - moneyRaised;
         }
 
-        public void AddMoney(int add){
+        public void AddMoney(int add, Context context){
             moneyRaised += add;
             if (moneyRaised > moneyNeed)
                 moneyRaised = moneyNeed;
@@ -42,6 +45,13 @@ public class BudgetItem{
             double b = moneyRaised;
             Double c = 100 * b/a;
             return Integer.valueOf(c.intValue());
+        }
+
+        public String toGO(){
+            date = new Date();
+            double a = (double)((dateEnd.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+            int s = (int) a;
+            return s + " days to go.";
         }
         public String outOf(){
             if(moneyRaised == moneyNeed)

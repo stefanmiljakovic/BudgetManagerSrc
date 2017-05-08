@@ -55,7 +55,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.projName.setText(item.getName());
         holder.money.setText(item.outOf());
         holder.pbar.setProgress(item.getPct());
-        holder.pbarlabel.setText(Integer.toString(item.getPct()));
+        holder.pbarlabel.setText(Integer.toString(item.getPct())+"%");
+        holder.tvToGo.setText(item.toGO());
 
 
         final String projectName = holder.projName.getText().toString();
@@ -140,6 +141,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public Button btnFocus;
         public Button btnEdit;
         public TextView pbarlabel;
+        public TextView tvToGo;
 
 
         public ViewHolder(View itemView) {
@@ -153,6 +155,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             btnDelete = (Button)itemView.findViewById(R.id.buttonDelete);
             btnFocus = (Button)itemView.findViewById(R.id.buttonFocus);
             btnEdit = (Button)itemView.findViewById(R.id.buttonEdit);
+            tvToGo = (TextView)itemView.findViewById(R.id.tvToGo);
         }
     }
 }
