@@ -2,9 +2,11 @@ package com.week1.practice1.budgetmanager.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.week1.practice1.budgetmanager.BudgetItem;
+import com.week1.practice1.budgetmanager.MainActivity;
 import com.week1.practice1.budgetmanager.R;
+import com.week1.practice1.budgetmanager.data.dataContract;
 import com.week1.practice1.budgetmanager.data.dataContractDbHelper;
 
 import java.util.List;
@@ -28,12 +32,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     private List<BudgetItem> items;
     private int itemLayout;
-    Context mContext;
+    private Context context;
+    private SQLiteDatabase mDb;
 
-
-    public MainAdapter(List<BudgetItem> items, int itemLayout) {
+    public MainAdapter(List<BudgetItem> items, int itemLayout, Context context) {
         this.items = items;
         this.itemLayout = itemLayout;
+        this.context = context;
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,10 +55,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.pbar.setProgress(item.getPct());
         holder.pbarlabel.setText(Integer.toString(item.getPct()));
 
+
+        final String projectName = holder.projName.getText().toString();
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                operate("DELETE",projectName);
             }
         });
 
@@ -82,6 +89,26 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         int position = items.indexOf(item);
         items.remove(position);
         notifyItemRemoved(position);
+    }
+
+
+    private void operate (String op, String prName){
+        dataContractDbHelper helper = new dataContractDbHelper(context);
+        mDb = helper.getWritableDatabase();
+
+        switch(op){
+            case "DELETE":
+                mDb.delete(dataContract.dataEntry.TABLE_NAME, dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
+                Intent rel = new Intent("callReloadDB");
+                rel.putExtra("message","RELOAD");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
+                break;
+            case "UPDATE":
+                break;
+            case "FOCUS":
+                break;
+        }
+
     }
 
 
