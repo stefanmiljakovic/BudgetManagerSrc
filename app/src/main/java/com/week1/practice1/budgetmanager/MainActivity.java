@@ -1,12 +1,16 @@
 package com.week1.practice1.budgetmanager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,11 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     public SQLiteDatabase mDb;
 
-    private void reloadDB(){
-       RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv);
+    public void reloadDB(){
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             recyclerView.setHasFixedSize(true);
-            recyclerView.setAdapter(new MainAdapter(createMockList(), R.layout.item_layout));
+            recyclerView.setAdapter(new MainAdapter(createMockList(), R.layout.item_layout, this));
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
         }
@@ -78,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        reloadDB();
+
         // Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,15 +97,29 @@ public class MainActivity extends AppCompatActivity {
                 goToAdd();
             }
         });
-        reloadDB();
-
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,new IntentFilter("callReloadDB"));
     }
     @Override
-    protected void onResume()
+    protected void onRestart()
     {
-        super.onResume();
+        super.onRestart();
         reloadDB();
     }
+
+
+
+
+    //    This will be called whenever an Intent with an action named "custom-event-name" is broadcasted.
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+
+            if(message.equals("RELOAD"))
+                reloadDB();
+        }
+    };
+
 
     private void goToAdd(){
         Intent add = new Intent(this, addToList.class);
