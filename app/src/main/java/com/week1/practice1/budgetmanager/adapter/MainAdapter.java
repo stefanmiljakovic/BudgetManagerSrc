@@ -2,11 +2,13 @@ package com.week1.practice1.budgetmanager.adapter;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,16 +94,34 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
 
-    private void operate (String op, String prName){
+    private void operate (String op, final String prName){
         dataContractDbHelper helper = new dataContractDbHelper(context);
         mDb = helper.getWritableDatabase();
 
         switch(op){
             case "DELETE":
-                mDb.delete(dataContract.dataEntry.TABLE_NAME, dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
-                Intent rel = new Intent("callReloadDB");
-                rel.putExtra("message","RELOAD");
-                LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
+                AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                alert.setTitle("Warning!");
+                alert.setMessage("Are you sure?");
+
+                alert.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDb.delete(dataContract.dataEntry.TABLE_NAME, dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
+                        Intent rel = new Intent("callReloadDB");
+                        rel.putExtra("message","RELOAD");
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
+                        dialog.dismiss();
+                    }
+                });
+                alert.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog showAlert = alert.create();
+                alert.show();
                 break;
             case "UPDATE":
                 break;
