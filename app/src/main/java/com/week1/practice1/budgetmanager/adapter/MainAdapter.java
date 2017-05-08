@@ -31,10 +31,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     Context mContext;
 
 
-    public MainAdapter(List<BudgetItem> items, int itemLayout, Context context) {
+    public MainAdapter(List<BudgetItem> items, int itemLayout) {
         this.items = items;
         this.itemLayout = itemLayout;
-        this.mContext = context;
     }
 
     @Override public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -42,8 +41,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    dataContractDbHelper DBHelper = new dataContractDbHelper(mContext);
-    SQLiteDatabase mDb = DBHelper.getWritableDatabase();
 
 
     @Override public void onBindViewHolder(ViewHolder holder, int position) {
@@ -51,6 +48,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.projName.setText(item.getName());
         holder.money.setText(item.outOf());
         holder.pbar.setProgress(item.getPct());
+        holder.pbarlabel.setText(Integer.toString(item.getPct()));
 
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +92,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public Button btnDelete;
         public Button btnFocus;
         public Button btnEdit;
+        public TextView pbarlabel;
 
 
         public ViewHolder(View itemView) {
@@ -101,6 +100,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             projName = (TextView)itemView.findViewById(R.id.tvProjectName);
             money = (TextView)itemView.findViewById(R.id.tvMoney);
             pbar = (ProgressBar)itemView.findViewById(R.id.progressBar);
+            pbar.setRotation(-90f);
+            pbar.setScaleY(-1f);
+            pbarlabel = (TextView)itemView.findViewById(R.id.progressBarLabel);
             btnDelete = (Button)itemView.findViewById(R.id.buttonDelete);
             btnFocus = (Button)itemView.findViewById(R.id.buttonFocus);
             btnEdit = (Button)itemView.findViewById(R.id.buttonEdit);
