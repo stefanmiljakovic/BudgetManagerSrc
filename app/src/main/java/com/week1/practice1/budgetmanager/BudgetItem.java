@@ -33,10 +33,8 @@ public class BudgetItem{
             return moneyNeed - moneyRaised;
         }
 
-        public void AddMoney(int add, Context context){
-            moneyRaised += add;
-            if (moneyRaised > moneyNeed)
-                moneyRaised = moneyNeed;
+        public void setMoneyRaised(int a){
+            moneyRaised = a;
         }
 
         public String getName(){
