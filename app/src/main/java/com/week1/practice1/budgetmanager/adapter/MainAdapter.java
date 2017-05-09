@@ -41,6 +41,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     private int itemLayout;
     private Context context;
     private SQLiteDatabase mDb;
+    private int selected = 0;
 
     public MainAdapter(List<BudgetItem> items, int itemLayout, Context context) {
         this.items = items;
@@ -56,7 +57,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
 
     @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
-        BudgetItem item = items.get(position);
+        final BudgetItem item = items.get(position);
         holder.projName.setText(item.getName());
         holder.money.setText(item.outOf());
         holder.pbar.setProgress(item.getPct());
@@ -82,9 +83,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.btnFocus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.background.setBackgroundColor(Color.parseColor("#00ff00"));
+                operate("FOCUS", projectName, position);
             }
         });
+
 
         holder.itemView.setTag(item);
     }
@@ -164,6 +166,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 addMoney.show();
                 break;
             case "FOCUS":
+                Intent intent = new Intent("select");
+                intent.putExtra("index", Integer.toString(position));
+                LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                 break;
         }
     }

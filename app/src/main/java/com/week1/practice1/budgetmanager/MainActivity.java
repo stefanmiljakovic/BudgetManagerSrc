@@ -1,17 +1,22 @@
 package com.week1.practice1.budgetmanager;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -98,7 +103,46 @@ public class MainActivity extends AppCompatActivity {
                 goToAdd();
             }
         });
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,
+                new IntentFilter("select"));
     }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("index");
+            int index = Integer.parseInt(message);
+
+            recyclerView = (RecyclerView) findViewById(R.id.rv);
+
+            for(int i = 0; i < recyclerView.getLayoutManager().getChildCount();i++)
+                recyclerView.getLayoutManager().findViewByPosition(i).setBackgroundColor(Color.parseColor("#EEEEEE"));
+            recyclerView.getLayoutManager().findViewByPosition(index).setBackgroundColor(Color.parseColor("#00ff00"));
+
+            List<BudgetItem> bi = createMockList();
+            BuildNotification(bi.get(index));
+
+        }
+    };
+
+    private void BuildNotification(BudgetItem budgetItem){
+        final Intent emptyIntent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder mBuilder =
+                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.dollar_icon)
+                        .setContentTitle("Project name: " + budgetItem.getName())
+                        .setContentText("You have raised " + budgetItem.getPct() + "% so far.")
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, mBuilder.build());
+
+    }
+
     @Override
     protected void onRestart()
     {
