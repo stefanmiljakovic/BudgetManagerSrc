@@ -96,7 +96,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
 
-    private void operate (String op, final String prName, final int position){
+    public void operate (String op, final String prName, final int position){
         dataContractDbHelper helper = new dataContractDbHelper(context);
         mDb = helper.getWritableDatabase();
 

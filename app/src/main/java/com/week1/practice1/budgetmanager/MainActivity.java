@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import com.week1.practice1.budgetmanager.adapter.MainAdapter;
 
+import com.week1.practice1.budgetmanager.data.NotificationReceiver;
 import com.week1.practice1.budgetmanager.data.dataContract;
 import com.week1.practice1.budgetmanager.data.dataContractDbHelper;
 
@@ -131,12 +133,22 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
+        Intent cancel = new Intent(this, NotificationReceiver.class);
+        cancel.putExtra("msg","CANCEL");
+        PendingIntent cancelPending = PendingIntent.getBroadcast(this, 0, cancel, 0);
+
+
         NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(this)
+                (NotificationCompat.Builder) new NotificationCompat.Builder(getBaseContext())
                         .setSmallIcon(R.drawable.dollar_icon)
                         .setContentTitle("Project name: " + budgetItem.getName())
-                        .setContentText("You have raised " + budgetItem.getPct() + "% so far.")
-                        .setContentIntent(pendingIntent);
+                        .setAutoCancel(true)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText("You have raised " + budgetItem.getPct() + "% so far. You have " + budgetItem.toGO()))
+                        .setContentIntent(pendingIntent)
+                        .setOngoing(true)
+                        .addAction(R.drawable.ic_decline,"Dismiss", cancelPending);
+
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, mBuilder.build());
