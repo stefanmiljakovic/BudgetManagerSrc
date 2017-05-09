@@ -33,9 +33,10 @@ import java.text.*;
 public class MainActivity extends AppCompatActivity {
 
     public SQLiteDatabase mDb;
+    public RecyclerView recyclerView;
 
     public void reloadDB(){
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv);
+        recyclerView = (RecyclerView) findViewById(R.id.rv);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(new MainAdapter(createMockList(), R.layout.item_layout, this));
@@ -97,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
                 goToAdd();
             }
         });
-        LocalBroadcastManager.getInstance(this).registerReceiver(receiver,new IntentFilter("callReloadDB"));
     }
     @Override
     protected void onRestart()
@@ -105,20 +105,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         reloadDB();
     }
-
-
-
-
-    //    This will be called whenever an Intent with an action named "custom-event-name" is broadcasted.
-    private BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("message");
-
-            if(message.equals("RELOAD"))
-                reloadDB();
-        }
-    };
 
 
     private void goToAdd(){

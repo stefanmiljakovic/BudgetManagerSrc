@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.week1.practice1.budgetmanager.BudgetItem;
@@ -53,7 +55,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
 
 
-    @Override public void onBindViewHolder(ViewHolder holder, int position) {
+    @Override public void onBindViewHolder(final ViewHolder holder, final int position) {
         BudgetItem item = items.get(position);
         holder.projName.setText(item.getName());
         holder.money.setText(item.outOf());
@@ -66,21 +68,21 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operate("DELETE",projectName);
+                operate("DELETE",projectName, position);
             }
         });
 
         holder.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                operate("UPDATE", projectName);
+                operate("UPDATE", projectName, position);
             }
         });
 
         holder.btnFocus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                holder.background.setBackgroundColor(Color.parseColor("#00ff00"));
             }
         });
 
@@ -91,14 +93,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         return items.size();
     }
 
-    public void remove(BudgetItem item) {
-        int position = items.indexOf(item);
-        items.remove(position);
-        notifyItemRemoved(position);
-    }
 
-
-    private void operate (String op, final String prName){
+    private void operate (String op, final String prName, final int position){
         dataContractDbHelper helper = new dataContractDbHelper(context);
         mDb = helper.getWritableDatabase();
 
@@ -112,7 +108,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mDb.delete(dataContract.dataEntry.TABLE_NAME, dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
-                        ReloadDB();
+                        items.remove(position);
+                        notifyItemRemoved(position);
                         dialog.dismiss();
                     }
                 });
@@ -152,7 +149,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                         cv.put(dataContract.dataEntry.COLUMN_MONEY_GOT, x);
                         mDb.update(dataContract.dataEntry.TABLE_NAME, cv,  dataContract.dataEntry.COLUMN_PROJECT_NAME + "=" + "'" + prName + "'",null);
 
-                        ReloadDB();
+                        items.get(position).setMoneyRaised(x);
+                        notifyItemChanged(position);
                         dialog.dismiss();
                     }
                 });
@@ -164,18 +162,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                     }
                 });
                 addMoney.show();
-
                 break;
             case "FOCUS":
                 break;
         }
-
-    }
-
-    private void ReloadDB(){
-        Intent rel = new Intent("callReloadDB");
-        rel.putExtra("message","RELOAD");
-        LocalBroadcastManager.getInstance(context).sendBroadcast(rel);
     }
 
 
@@ -188,6 +178,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         public Button btnEdit;
         public TextView pbarlabel;
         public TextView tvToGo;
+        public RelativeLayout background;
 
 
         public ViewHolder(View itemView) {
@@ -202,6 +193,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             btnFocus = (Button)itemView.findViewById(R.id.buttonFocus);
             btnEdit = (Button)itemView.findViewById(R.id.buttonEdit);
             tvToGo = (TextView)itemView.findViewById(R.id.tvToGo);
+            background = (RelativeLayout)itemView.findViewById(R.id.background);
         }
     }
 }
